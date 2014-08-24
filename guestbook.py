@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+import logging
 import cgi
 import os
 import urllib
@@ -58,6 +58,11 @@ class Greeting(ndb.Model):
   author = ndb.UserProperty()
   content = ndb.StringProperty(indexed=False)
   date = ndb.DateTimeProperty(auto_now_add=True)
+
+class Account(ndb.Model):
+  print 'Account'
+  username = ndb.StringProperty()
+  power = ndb.StringProperty()
 
 """
 class MainPage(webapp2.RequestHandler):
@@ -112,10 +117,19 @@ class MainPage(webapp2.RequestHandler):
         greetings_query = Greeting.query(
             ancestor=guestbook_key(guestbook_name)).order(-Greeting.date)
         greetings = greetings_query.fetch(10)
-
-        if users.get_current_user():
-            url = users.create_logout_url(self.request.uri)
-            url_linktext = 'Logout'
+        user = users.get_current_user()
+        if user:
+          print "user"
+          url = users.create_logout_url(self.request.uri)
+          logging.info('Signe by user %s', user.nickname())
+          url_linktext = 'Logout'
+          accounts = Account.query(Account.power=='editor')
+          logging.info('number %d', accounts.count())
+          for account in accounts:
+            logging.info(u'unsername %s', account.username)
+            if account.username == user.nickname():
+              url_linktext = 'Editor, you want to Logout'
+              break
         else:
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
