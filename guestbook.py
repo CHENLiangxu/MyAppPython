@@ -35,11 +35,11 @@ class Account(ndb.Model):
   username = ndb.StringProperty()
   power = ndb.StringProperty()
 
-class Itme(ndb.Model):
+class Item(ndb.Model):
   code_id = ndb.StringProperty()
   price = ndb.FloatProperty()
   name = ndb.StringProperty()
-  type_itme = ndb.StringProperty(choices=TYPE_ITEM)
+  type_item = ndb.StringProperty(choices=TYPE_ITEM)
 
 class IndexPage(webapp2.RequestHandler):
     def get(self):
@@ -123,7 +123,9 @@ class ItemPage(webapp2.RequestHandler):
           url = users.create_logout_url(self.request.uri)
           url_linktext = 'Logout'
           is_editor = True
+          items = Item.query()
           template_values = {
+              'items': items,
               'url': url,
               'url_linktext': url_linktext,
           }
@@ -132,7 +134,17 @@ class ItemPage(webapp2.RequestHandler):
     if not is_editor:
       self.redirect(users.create_login_url(self.request.uri))
 
+  def post(self):
+    #to do: price reglex
 
+    new_item = Item(
+      code_id=self.request.get('code_id'),
+      price=float(self.request.get('price')),
+      name=self.request.get('name'),
+      type_item=self.request.get('type_item'))
+    new_item.put()
+    #input xml for add many items at one time
+    self.redirect('/item')
 
 application = webapp2.WSGIApplication([
     ('/', IndexPage),

@@ -3,10 +3,28 @@
 {% block content %}
 <h2>Add item<h2>
 <div>
-one way
+<form action="/item" method="post">
+      code id: <input type="text", name="code_id" size="20" required></br>
+      name : <input type="text", name="name" size="20"></br>
+      price : <input type="text", name="price" size="20" required></br>
+      type : <select name="type_item">
+			  <option value="None">None</option>
+			  <option value="针">针</option>
+			  <option value="铊">铊</option>
+			  <option value="钉">钉</option>
+			  <option value="片">片</option>
+			</select></br>
+      <input type="submit" value="submit">
+</form>
 </div>
 <div>
-tow way
+secode way is use the xml or specail formal
 </div>
+<!-- add table for displays all the items
+-->
+<hr>
+{% for item in items %}
+	{{item.code_id}} 
+{% endfor %}
 <hr>
 {% endblock %}
