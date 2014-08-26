@@ -1,19 +1,4 @@
-#!/usr/bin/env python
-#
-# Copyright 2007 Google Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
+# -*- coding: utf-8 -*-
 import logging
 import cgi
 import os
@@ -24,6 +9,7 @@ import jinja2
 
 from google.appengine.ext import ndb
 from google.appengine.api import users
+import utils
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -32,84 +18,57 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 guestbook_key = ndb.Key('Guestbook', 'default_guestbook')
 
-MAIN_PAGE_FOOTER_TEMPLATE = """\
-    <form action="/sign?%s" method="post">
-      <div><textarea name="content" rows="3" cols="60"></textarea></div>
-      <div><input type="submit" value="Sign Guestbook"></div>
-    </form>
-    <hr>
-    <form>Guestbook name:
-      <input value="%s" name="guestbook_name">
-      <input type="submit" value="switch">
-    </form>
-    <a href="%s">%s</a>
-  </body>
-</html>
-"""
-
 DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
+TYPE_ITEM = [u'针', u'铊', u'钉', u'片']
 
 def guestbook_key(guestbook_name=DEFAULT_GUESTBOOK_NAME):
     """Constructs a Datastore key for a Guestbook entity with guestbook_name."""
     return ndb.Key('Guestbook', guestbook_name)
 
 class Greeting(ndb.Model):
-  print 'Greeting'
   author = ndb.UserProperty()
   content = ndb.StringProperty(indexed=False)
   date = ndb.DateTimeProperty(auto_now_add=True)
 
 class Account(ndb.Model):
-  print 'Account'
   username = ndb.StringProperty()
   power = ndb.StringProperty()
 
-"""
-class MainPage(webapp2.RequestHandler):
-  print "Main"
-  def get(self):
-    self.response.out.write('<html><body>')
-    guestbook_name = self.request.get('guestbook_name',DEFAULT_GUESTBOOK_NAME)
-    print "here"
-    greetings_query = Greeting.query(
-            ancestor=guestbook_key(guestbook_name)).order(-Greeting.date)
-    print "1"
-    greetings = greetings_query.fetch(10)
-    for greeting in greetings:
-      print 'for'
-      if greeting.author:
-        self.response.out.write('<b>%s</b> wrote:' % greeting.author.nickname())
-      else:
-        self.response.out.write('An anonymous person wrote:')
-      self.response.out.write('<blockquote>%s</blockquote>' %
-                              cgi.escape(greeting.content))
+class Itme(ndb.Model):
+  code_id = ndb.StringProperty()
+  price = ndb.FloatProperty()
+  name = ndb.StringProperty()
+  type_itme = ndb.StringProperty(choices=TYPE_ITEM)
 
-    if users.get_current_user():
-            url = users.create_logout_url(self.request.uri)
-            url_linktext = 'Logout'
-    else:
+class IndexPage(webapp2.RequestHandler):
+    def get(self):
+      user = users.get_current_user()
+      if user:
+        welcome_word = user.nickname() + ' back'
+        url_linktext = 'Logout'
+        url = users.create_logout_url(self.request.uri)
+        account = Account.query(Account.username == user.nickname()).get()
+        if account:
+          if account.power == 'editor':
+            is_editor = True
+            welcome_word = 'Editor ' + user.nickname() + ' back'
+        else:
+          new_user = Account(username=user.nickname(), power='normal')
+          new_user.put()
+          welcome_word = user.nickname() + ' visit my site by first time'
+      else:
+        welcome_word = 'you'
         url = users.create_login_url(self.request.uri)
         url_linktext = 'Login'
+      template_values = {
+          'welcome_word': welcome_word,
+          'url': url,
+          'url_linktext': url_linktext,
+      }
+      template = JINJA_ENVIRONMENT.get_template('index.html')
+      self.response.write(template.render(template_values))
 
-    # Write the submission form and the footer of the page
-    sign_query_params = urllib.urlencode({'guestbook_name': guestbook_name})
-    self.response.write(MAIN_PAGE_FOOTER_TEMPLATE %
-                        (sign_query_params, cgi.escape(guestbook_name),
-                         url, url_linktext))
-
-class Guestbook(webapp2.RequestHandler):
-  def post(self):
-    greeting = Greeting(parent=guestbook_key)
-
-    if users.get_current_user():
-      greeting.author = users.get_current_user()
-
-    greeting.content = self.request.get('content')
-    greeting.put()
-    self.redirect('/')
-
-"""
-class MainPage(webapp2.RequestHandler):
+class GuestbookPage(webapp2.RequestHandler):
 
     def get(self):
         guestbook_name = self.request.get('guestbook_name',
@@ -119,20 +78,11 @@ class MainPage(webapp2.RequestHandler):
         greetings = greetings_query.fetch(10)
         user = users.get_current_user()
         if user:
-          print "user"
           url = users.create_logout_url(self.request.uri)
-          logging.info('Signe by user %s', user.nickname())
           url_linktext = 'Logout'
-          accounts = Account.query(Account.power=='editor')
-          logging.info('number %d', accounts.count())
-          for account in accounts:
-            logging.info(u'unsername %s', account.username)
-            if account.username == user.nickname():
-              url_linktext = 'Editor, you want to Logout'
-              break
         else:
-            url = users.create_login_url(self.request.uri)
-            url_linktext = 'Login'
+          url = users.create_login_url(self.request.uri)
+          url_linktext = 'Login'
 
         template_values = {
             'greetings': greetings,
@@ -141,15 +91,11 @@ class MainPage(webapp2.RequestHandler):
             'url_linktext': url_linktext,
         }
 
-        template = JINJA_ENVIRONMENT.get_template('index.html')
+        template = JINJA_ENVIRONMENT.get_template('guesbook.html')
         self.response.write(template.render(template_values))
 
 class Guestbook(webapp2.RequestHandler):
     def post(self):
-        # We set the same parent key on the 'Greeting' to ensure each Greeting
-        # is in the same entity group. Queries across the single entity group
-        # will be consistent. However, the write rate to a single entity group
-        # should be limited to ~1/second.
         guestbook_name = self.request.get('guestbook_name',
                                           DEFAULT_GUESTBOOK_NAME)
         greeting = Greeting(parent=guestbook_key(guestbook_name))
@@ -163,10 +109,9 @@ class Guestbook(webapp2.RequestHandler):
         query_params = {'guestbook_name': guestbook_name}
         self.redirect('/?' + urllib.urlencode(query_params))
 
-
-print "page"
 application = webapp2.WSGIApplication([
-    ('/', MainPage),
+    ('/', IndexPage),
+    ('/guestbook', GuestbookPage),
     ('/sign', Guestbook),
 ], debug=True)
-print "end"
+

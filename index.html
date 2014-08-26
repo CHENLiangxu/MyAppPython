@@ -1,33 +1,10 @@
-<!DOCTYPE html>
-{% autoescape true %}
-<html>
-  <head>
-    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css"/>
-  </head>
-  <body>
-    {% for greeting in greetings %}
-      {% if greeting.author %}
-        <h2>{{ greeting.author.nickname() }}</h2> wrote:
-      {% else %}
-       An anonymous person wrote:
-      {% endif %}
-      <blockquote>{{ greeting.content }}</blockquote>
-    {% endfor %}
-
-    <form action="/sign?guestbook_name={{ guestbook_name }}" method="post">
-      <div><textarea name="content" rows="3" cols="60"></textarea></div>
-      <div><input type="submit" value="Sign Guestbook"></div>
-    </form>
+{% extends "base.html" %}
+{% block title %}CHEN_Liangxu web app{% endblock %}
+{% block content %}
+<h2>Hello {{ welcome_word }} !<h2>
+<ul>
+	<li><a href="/guestbook">guestbook</a></li>
+	<li><a href="{{ url|safe }}">{{ url_linktext }}</a></li>
 
     <hr>
-
-    <form>Guestbook name:
-      <input value="{{ guestbook_name }}" name="guestbook_name">
-      <input type="submit" value="switch">
-    </form>
-
-    <a href="{{ url|safe }}">{{ url_linktext }}</a>
-    <p>Cory by CHEN Liangxu<p>
-  </body>
-</html>
-{% endautoescape %}
+{% endblock %}
