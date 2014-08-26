@@ -6,6 +6,7 @@ import urllib
 import datetime
 import webapp2
 import jinja2
+import time
 
 from google.appengine.ext import ndb
 from google.appengine.api import users
@@ -19,7 +20,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 guestbook_key = ndb.Key('Guestbook', 'default_guestbook')
 
 DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
-TYPE_ITEM = [u'针', u'铊', u'钉', u'片']
+TYPE_ITEM = [u'针', u'铊', u'钉', u'片', 'None']
 
 def guestbook_key(guestbook_name=DEFAULT_GUESTBOOK_NAME):
     """Constructs a Datastore key for a Guestbook entity with guestbook_name."""
@@ -43,6 +44,7 @@ class Itme(ndb.Model):
 class IndexPage(webapp2.RequestHandler):
     def get(self):
       user = users.get_current_user()
+      is_editor = False
       if user:
         welcome_word = user.nickname() + ' back'
         url_linktext = 'Logout'
@@ -57,15 +59,16 @@ class IndexPage(webapp2.RequestHandler):
           new_user.put()
           welcome_word = user.nickname() + ' visit my site by first time'
       else:
-        welcome_word = 'you'
+        welcome_word = ''
         url = users.create_login_url(self.request.uri)
         url_linktext = 'Login'
       template_values = {
           'welcome_word': welcome_word,
           'url': url,
           'url_linktext': url_linktext,
+          'is_editor': is_editor,
       }
-      template = JINJA_ENVIRONMENT.get_template('index.html')
+      template = JINJA_ENVIRONMENT.get_template('template/index.html')
       self.response.write(template.render(template_values))
 
 class GuestbookPage(webapp2.RequestHandler):
@@ -91,7 +94,7 @@ class GuestbookPage(webapp2.RequestHandler):
             'url_linktext': url_linktext,
         }
 
-        template = JINJA_ENVIRONMENT.get_template('guesbook.html')
+        template = JINJA_ENVIRONMENT.get_template('template/guesbook.html')
         self.response.write(template.render(template_values))
 
 class Guestbook(webapp2.RequestHandler):
@@ -107,11 +110,34 @@ class Guestbook(webapp2.RequestHandler):
         greeting.put()
 
         query_params = {'guestbook_name': guestbook_name}
-        self.redirect('/?' + urllib.urlencode(query_params))
+        self.redirect('/guestbook?' + urllib.urlencode(query_params))
+
+class ItemPage(webapp2.RequestHandler):
+  def get(self):
+    user = users.get_current_user()
+    is_editor = False
+    if user:
+      account = Account.query(Account.username == user.nickname()).get()
+      if account:
+        if account.power == 'editor':
+          url = users.create_logout_url(self.request.uri)
+          url_linktext = 'Logout'
+          is_editor = True
+          template_values = {
+              'url': url,
+              'url_linktext': url_linktext,
+          }
+          template = JINJA_ENVIRONMENT.get_template('template/item.html')
+          self.response.write(template.render(template_values))
+    if not is_editor:
+      self.redirect(users.create_login_url(self.request.uri))
+
+
 
 application = webapp2.WSGIApplication([
     ('/', IndexPage),
     ('/guestbook', GuestbookPage),
     ('/sign', Guestbook),
+    ('/item', ItemPage),
 ], debug=True)
 
