@@ -3,7 +3,7 @@
 {% block content %}
 <div class="title_item_page">Add item</div>
 <div class="add_item_form">
-<form action="/item" method="post">
+<form action="/store_item" method="post">
 	<table class="add_item_table">
 		<tr><td class="add_item_table_left_td">code id:</td><td>{{input('code_id',required=True)}}</td></tr>
       	<tr><td class="add_item_table_left_td">name : </td><td>{{input('name')}}</td></tr>

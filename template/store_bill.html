@@ -1,0 +1,27 @@
+{% extends "template/base.html" %}
+{% block title %}Bill{% endblock %}
+{% block content %}
+<div class="add_item_bill_form">
+<form action="/store_bill?bill_id={{bill_id}}" method="post">
+	<table class="add_item_table">
+		<thead>
+			<tr><td>item_id</td><td>total</td></tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td><select name="item_id">
+				{% for item in items %}
+					<option value="{{item.code_id}}">{{item.code_id}}</option>
+				{% endfor %}
+				</select>
+			</td>
+			<td>{{input('number',required=True)}}</td>
+		</tr>
+		<tbody>
+	</table>
+	<input type="submit" value="add" name="Operation">
+</form>
+{% for key, value in content.iteritems() %}
+	{{ key }} / {{ value }} </br>
+{% endfor %}
+{% endblock %}

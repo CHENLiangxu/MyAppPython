@@ -11,7 +11,7 @@ handlers:
   script: main.application
 - url: /guestbook.*
   script: guestbook.application
-- url: /item.*
+- url: /store.*
   script: store.application
 
 libraries:

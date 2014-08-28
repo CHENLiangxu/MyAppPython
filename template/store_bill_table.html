@@ -1,0 +1,26 @@
+{% extends "template/base.html" %}
+{% block title %}Bill Table{% endblock %}
+{% block content %}
+<div class="bill_div">
+	<table class="add_item_table">
+		<thead>
+			<tr><td>bill id</td><td>total price</td><td>date</td><td>Operation</td></tr>
+		</thead>
+		<tbody>
+		{% for bill_table in bill_tables %}
+		 <tr>
+		 	<td>{{ bill_table.bill_id }}</td>
+		 	<td>{{ bill_table.total_price }}</td>
+		 	<td>{{ bill_table.date.date() }}</td>
+		 	<td><a href="/store_bill?bill_id={{ bill_table.bill_id }}">Edite</a></td>
+		 </tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
+<hr>
+<form action="/store_bill_table" method="post">
+    <input type="submit" value="new a bill">
+</form>
+<hr>
+{% endblock %}
