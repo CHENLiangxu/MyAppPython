@@ -7,8 +7,12 @@ threadsafe: yes
 handlers:
 - url: /stylesheets
   static_dir: stylesheets
-- url: /.*
+- url: /$
+  script: main.application
+- url: /guestbook.*
   script: guestbook.application
+- url: /item.*
+  script: store.application
 
 libraries:
 - name: webapp2
