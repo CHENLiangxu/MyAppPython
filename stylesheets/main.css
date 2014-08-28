@@ -2,3 +2,73 @@ body {
   font-family: Verdana, Helvetica, sans-serif;
   background-color: #DDDDDD;
 }
+
+table{
+	width:100%;
+	border-collapse:collapse;
+	table-layout:auto;
+	vertical-align:top;
+	margin-bottom:15px;
+	border:1px solid #CCCCCC;
+}
+
+table thead th{
+	color:#FFFFFF;
+	background-color:#666666;
+	border:1px solid #CCCCCC;
+	border-collapse:collapse;
+	text-align:center;
+	table-layout:auto;
+	vertical-align:middle;
+}
+
+table tbody td{
+	vertical-align:top;
+	border-collapse:collapse;
+	border-left:1px solid #CCCCCC;
+	border-right:1px solid #CCCCCC;
+}
+	
+table thead th, table tbody td{
+	padding:5px;
+	border-collapse:collapse;
+}
+
+
+
+li a:hover {
+background:#EE9309;
+} 
+
+.title_item_page{
+	color : #003824;
+	background-color : transparent;
+	font-family : fantasy;
+	font-size : 16pt;
+	font-weight : normal;
+	text-align : center;
+}
+
+.add_item_table{
+	color : #003824;
+	width:60%;
+	border-collapse:collapse;
+	table-layout:auto;
+	vertical-align:top;
+	margin-bottom:15px;
+	border:2px solid #CCCCCC;
+}
+
+.add_item_table_left_td{
+	text-align : right;
+	vertical-align:top;
+	border-collapse:collapse;
+	border-left:1px solid #CCCCCC;
+	border-right:1px solid #CCCCCC;
+}
+.itme_tr_add{
+	background-color : #78FFB3;
+	padding:5px;
+	border-collapse:collapse;
+}
+

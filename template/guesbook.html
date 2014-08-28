@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "template/base.html" %}
 {% block title %}guestbook{% endblock %}
 {% block content %}
     {% for greeting in greetings %}
@@ -10,7 +10,7 @@
       <blockquote>{{ greeting.content }}</blockquote>
     {% endfor %}
 
-    <form action="/sign?guestbook_name={{ guestbook_name }}" method="post">
+    <form action="/guestbook/sign?guestbook_name={{ guestbook_name }}" method="post">
       <div><textarea name="content" rows="3" cols="60"></textarea></div>
       <div><input type="submit" value="Sign Guestbook"></div>
     </form>
