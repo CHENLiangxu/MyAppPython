@@ -22,17 +22,21 @@ def buildContent(bill_id):
   bill_tables = BillTable.query()
   bill_items = Bill.query(Bill.bill_id==bill_id)
   total_price = 0
+  i = 0
   content = {}
   for bill_item in bill_items:
     item = Item.query(Item.code_id==bill_item.item_id).get()
-    content[bill_item.item_id]={
+    content[i]={
+      'id': bill_item.item_id,
+      'name': item.name,
       'price': item.price,
       'number': bill_item.number,
       'total': item.price*bill_item.number,
     }
-    total_price += content[bill_item.item_id]['total']
-    content['total_price'] = total_price
-    logging.info(content)
+    total_price += content[i]['total']
+    i = i + 1
+  content['total_price'] = total_price
+  logging.info(content)
   return content
 
 class Item(ndb.Model):

@@ -11,6 +11,16 @@
     <input type="{{ type }}" name="{{ name }}" value="{{
         value|e }}" size="{{ size }}" required="{{require}}">
     {%- endmacro %}
+    <div id="menu">
+        <ul>
+            <li><a href="/">home</a></li>
+            {% if is_editor %}
+            <li><a href="/store_item">add item</a></li>
+            <li><a href="/store_bill_table">add bill</a></li>
+            {% endif %}
+            <li><a href="/guestbook">guestbook</a></li>
+        </ul>
+    </div>
     <div id="content">{% block content %}{% endblock %}</div>
     <div id="footer">
         {% block footer %}

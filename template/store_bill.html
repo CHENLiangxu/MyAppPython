@@ -5,7 +5,7 @@
 <form action="/store_bill?bill_id={{bill_id}}" method="post">
 	<table class="add_item_table">
 		<thead>
-			<tr><td>item_id</td><td>total</td></tr>
+			<tr><td>item_id</td><td>quantity</td></tr>
 		</thead>
 		<tbody>
 		<tr>
@@ -21,7 +21,25 @@
 	</table>
 	<input type="submit" value="add" name="Operation">
 </form>
-{% for key, value in content.iteritems() %}
-	{{ key }} / {{ value }} </br>
-{% endfor %}
+<hr>
+<div class="item_div">
+	<table class="add_item_table">
+		<thead>
+			<tr><td>id</td><td>name</td><td>unit price</td><td>quantity</td><td>total</td></tr>
+		</thead>
+		<tbody>
+		{% for key, value in content.iteritems() %}
+		<tr>
+			<td>{{ value.id }}</td>
+			<td>{{ value.name }}</td>
+			<td>{{ value.price }}</td>
+			<td>{{ value.number }}</td>
+			<td>{{ value.total }}</td>
+		</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	<h3>Total price:{{ total_price }}</h3>
+</div>
+<hr>
 {% endblock %}
