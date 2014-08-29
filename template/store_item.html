@@ -5,10 +5,10 @@
 <div class="add_item_form">
 <form action="/store_item" method="post">
 	<table class="add_item_table">
-		<tr><td class="add_item_table_left_td">code id:</td><td>{{input('code_id',required=True)}}</td></tr>
-      	<tr><td class="add_item_table_left_td">name : </td><td>{{input('name')}}</td></tr>
-      	<tr><td class="add_item_table_left_td">price : </td><td>{{input('price',required=True)}}</td></tr>
-      	<tr><td class="add_item_table_left_td">type : </td><td><select name="type_item">
+		<tr><td class="add_item_table_left_td">code id(编码):</td><td>{{input('code_id',required=True)}}</td></tr>
+      	<tr><td class="add_item_table_left_td">name(名字) : </td><td>{{input('name')}}</td></tr>
+      	<tr><td class="add_item_table_left_td">price(单价) : </td><td>{{input('price',required=True)}}</td></tr>
+      	<tr><td class="add_item_table_left_td">type(类别) : </td><td><select name="type_item">
 			  <option value="None">None</option>
 			  <option value="针">针</option>
 			  <option value="铊">铊</option>
@@ -16,7 +16,7 @@
 			  <option value="片">片</option>
 			</select></td></tr>
 	</table>
-    <input type="submit" value="submit">
+    <input type="submit" value="Add">
 </form>
 </div>
 <div>

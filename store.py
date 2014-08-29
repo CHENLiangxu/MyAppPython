@@ -78,7 +78,7 @@ class ItemPage(webapp2.RequestHandler):
       type_item=self.request.get('type_item'))
     new_item.put()
     #input xml for add many items at one time
-    self.redirect('/item')
+    self.redirect('/store_item')
 
 class BillPage(webapp2.RequestHandler):
   def get(self):

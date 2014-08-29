@@ -5,7 +5,7 @@
 <form action="/store_bill?bill_id={{bill_id}}" method="post">
 	<table class="add_item_table">
 		<thead>
-			<tr><td>item_id</td><td>quantity</td></tr>
+			<tr><td>item_id(货物编码)</td><td>quantity(数量)</td></tr>
 		</thead>
 		<tbody>
 		<tr>
@@ -25,7 +25,7 @@
 <div class="item_div">
 	<table class="add_item_table">
 		<thead>
-			<tr><td>id</td><td>name</td><td>unit price</td><td>quantity</td><td>total</td></tr>
+			<tr><td>id(货物编码)</td><td>name(名字)</td><td>unit price(单价)</td><td>quantity(数量)</td><td>total(总价)</td></tr>
 		</thead>
 		<tbody>
 		{% for key, value in content.iteritems() %}
@@ -39,7 +39,7 @@
 		{% endfor %}
 		</tbody>
 	</table>
-	<h3>Total price:{{ total_price }}</h3>
+	<h3>Total price(合计):{{ total_price }}</h3>
 </div>
 <hr>
 {% endblock %}
