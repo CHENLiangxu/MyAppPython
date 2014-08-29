@@ -1,10 +1,10 @@
 #-*- coding: utf-8 -*-
-import logging
 import webapp2
 import jinja2
 import time
 import setting
 import urllib
+import logging
 
 from google.appengine.ext import ndb
 from google.appengine.api import users
@@ -17,6 +17,21 @@ def isEditor(user):
       if account.power == 'editor':
         return True
   return False
+
+def add_mul_item(text):
+  list_items = {}
+  text=text.replace('\r\n', '')
+  items = text.split(";")
+  for item in items:
+    content = item.split(" ")
+    if len(content) == 4:
+      list_items[content[0]] = {
+        'name': content[1],
+        'price': float(content[2]),
+        'type_item': setting.TYPE_ITEM[int(content[3])],
+      }
+  logging.info(list_items)
+  return list_items
 
 def buildContent(bill_id, del_item_id, del_item_number):
   bill_tables = BillTable.query().order(-BillTable.date)
@@ -42,7 +57,6 @@ def buildContent(bill_id, del_item_id, del_item_number):
     total_price += content[i]['total']
     i = i + 1
   content['total_price'] = total_price
-  logging.info(content)
   return content
 
 class Item(ndb.Model):
@@ -77,13 +91,26 @@ class ItemPage(webapp2.RequestHandler):
   def post(self):
     #to do: price reglex
     #to do: check code_id unique
-    new_item = Item(
-      code_id=self.request.get('code_id'),
-      price=float(self.request.get('price')),
-      name=self.request.get('name'),
-      type_item=self.request.get('type_item'))
-    new_item.put()
-    #input xml for add many items at one time
+    if self.request.get('type') == "Add":
+      new_item = Item(
+        code_id=self.request.get('code_id'),
+        price=float(self.request.get('price')),
+        name=self.request.get('name'),
+        type_item=self.request.get('type_item'))
+      new_item.put()
+    else:
+      list_new_items = add_mul_item(self.request.get('text'))
+      try:
+        for item in list_new_items:
+          logging.info('***'+item+'***')
+          new_item = Item(
+            code_id=str(item),
+            price=list_new_items[item]['price'],
+            name=list_new_items[item]['name'],
+            type_item=list_new_items[item]['type_item'],)
+          new_item.put()
+      except:
+        pass
     self.redirect('/store_item')
 
 class BillPage(webapp2.RequestHandler):

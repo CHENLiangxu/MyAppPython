@@ -1,4 +1,7 @@
-import webapp2
-from google.appengine.ext import ndb
-from google.appengine.api import users
-import guestbook
+from store import *
+import logging
+
+class GenerateUtils():
+
+    def add_mul_item(text):
+        logging.info(text)
