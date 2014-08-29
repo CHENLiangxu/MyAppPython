@@ -1,6 +1,10 @@
 {% extends "template/base.html" %}
 {% block title %}Bill{% endblock %}
 {% block content %}
+<iframe src="/store_item" align="right" width="350" height="600" id="item" style="display: none;">
+  <p>Your browser does not support iframes.</p>
+</iframe>
+
 <div class="add_item_bill_form">
 <form action="/store_bill?bill_id={{bill_id}}" method="post">
 	<table class="add_item_table">
@@ -21,6 +25,7 @@
 	</table>
 	<input type="submit" value="add" name="Operation">
 </form>
+<button onclick="displayItems()">Show the items</button>
 <hr>
 <div class="item_div">
 	<table class="add_item_table">
@@ -42,4 +47,15 @@
 	<h3>Total price(合计):{{ total_price }}</h3>
 </div>
 <hr>
+<script>
+function displayItems()
+{
+	item = document.getElementById("item");
+	if (item.style.display == "none") {
+		item.style.display = "block";
+	} else {
+		item.style.display = "none";
+	}
+}
+</script>
 {% endblock %}
