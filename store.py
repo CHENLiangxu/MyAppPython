@@ -18,8 +18,14 @@ def isEditor(user):
         return True
   return False
 
-def buildContent(bill_id):
-  bill_tables = BillTable.query()
+def buildContent(bill_id, del_item_id, del_item_number):
+  bill_tables = BillTable.query().order(-BillTable.date)
+  if del_item_id:
+    del_item = Bill.query(
+      (Bill.bill_id==bill_id)and
+      (Bill.item_id==del_item_id)and
+      (Bill.number==del_item_number))
+    del_item.get().put().delete()
   bill_items = Bill.query(Bill.bill_id==bill_id)
   total_price = 0
   i = 0
@@ -59,7 +65,7 @@ class ItemPage(webapp2.RequestHandler):
   def get(self):
     user = users.get_current_user()
     if isEditor(user):
-      items = Item.query()
+      items = Item.query().order(Item.code_id)
       template_values = {
           'items': items,
       }
@@ -106,7 +112,12 @@ class EditeBill(webapp2.RequestHandler):
     user = users.get_current_user()
     if isEditor(user):
       bill_id = self.request.get('bill_id')
-      content = buildContent(bill_id)
+      del_item_id = self.request.get('item_id')
+      if del_item_id:
+        del_item_number = int(self.request.get('number'))
+      else:
+        del_item_number = None
+      content = buildContent(bill_id, del_item_id, del_item_number)
       bill_table = BillTable.query(BillTable.bill_id==bill_id).get()
       bill_table.total_price = content['total_price']
       bill_table.put()

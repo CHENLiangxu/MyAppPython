@@ -12,6 +12,11 @@ indexes:
 
 - kind: Account
 
+- kind: Bill
+  properties:
+  - name: bill_id
+  - name: item_id
+
 - kind: Greeting
   ancestor: yes
   properties:

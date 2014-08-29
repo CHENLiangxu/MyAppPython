@@ -30,7 +30,7 @@
 <div class="item_div">
 	<table class="add_item_table">
 		<thead>
-			<tr><td>id(货物编码)</td><td>name(名字)</td><td>unit price(单价)</td><td>quantity(数量)</td><td>total(总价)</td></tr>
+			<tr><td>id(货物编码)</td><td>name(名字)</td><td>unit price(单价)</td><td>quantity(数量)</td><td>total(总价)</td><td>operation</td></tr>
 		</thead>
 		<tbody>
 		{% for key, value in content.iteritems() %}
@@ -40,6 +40,7 @@
 			<td>{{ value.price }}</td>
 			<td>{{ value.number }}</td>
 			<td>{{ value.total }}</td>
+			<td><a href="/store_bill?bill_id={{bill_id}}&item_id={{value.id}}&number={{value.number}}">delete{{value.key}}</a></td>
 		</tr>
 		{% endfor %}
 		</tbody>
