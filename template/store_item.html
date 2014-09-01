@@ -1,7 +1,7 @@
 {% extends "template/base.html" %}
 {% block title %}Add item{% endblock %}
 {% block content %}
-
+{% if result %}
 {% for key, value in result.iteritems() %}
 	{% if value %}
 		<div class="error_add_item"> Success add  {{ key }} item  <div>
@@ -9,6 +9,7 @@
 		<div class="error_add_item"> Can not add  {{ key }} item  <div>
 	{% endif %}
 {% endfor %}
+{% endif %}
 
 <div class="title_item_page">Add item</div>
 <div class="add_item_form">

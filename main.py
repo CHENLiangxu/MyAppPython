@@ -7,7 +7,6 @@ import setting
 from google.appengine.ext import ndb
 from google.appengine.api import users
 
-
 class Account(ndb.Model):
   username = ndb.StringProperty()
   power = ndb.StringProperty()
