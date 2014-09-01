@@ -65,6 +65,17 @@ class Item(ndb.Model):
   name = ndb.StringProperty()
   type_item = ndb.StringProperty(choices=setting.TYPE_ITEM)
 
+  def set(self, code_id, price, name=None, type_item=None):
+    try:
+      self.code_id = code_id
+      self.price = price
+      self.name = name
+      self.type_item = type_item
+      self.put()
+      return True
+    except:
+      return False    
+
 class Bill(ndb.Model):
   bill_id = ndb.StringProperty()
   item_id = ndb.StringProperty()
@@ -91,34 +102,43 @@ class ItemPage(webapp2.RequestHandler):
   def post(self):
     #to do: price reglex
     #to do: check code_id unique
+    result = {}
     if self.request.get('type') == "Add":
-      new_item = Item(
+      new_item = Item()
+      result[self.request.get('code_id')] = new_item.set(
         code_id=self.request.get('code_id'),
         price=float(self.request.get('price')),
         name=self.request.get('name'),
-        type_item=self.request.get('type_item'))
-      new_item.put()
+        type_item=self.request.get('type_item'),
+      )
     else:
       list_new_items = add_mul_item(self.request.get('text'))
-      try:
-        for item in list_new_items:
-          logging.info('***'+item+'***')
-          new_item = Item(
+      for item in list_new_items:
+        new_item = Item()
+        try:
+          result[str(item)] = new_item.set(
             code_id=str(item),
             price=list_new_items[item]['price'],
             name=list_new_items[item]['name'],
             type_item=list_new_items[item]['type_item'],)
-          new_item.put()
-      except:
-        pass
-    self.redirect('/store_item')
+        except:
+          result[str(item)] = False
+      if len(result) == 0:
+        result['all'] = False
+    items = Item.query().order(Item.code_id)
+    template_values = {
+          'items': items,
+          'result': result,
+      }
+    template = setting.JINJA_ENVIRONMENT.get_template('template/store_item.html')
+    self.response.write(template.render(template_values))
 
 class BillPage(webapp2.RequestHandler):
   def get(self):
     user = users.get_current_user()
     if isEditor(user):
       template_values = {
-          'bill_tables': BillTable.query(),
+          'bill_tables': BillTable.query().order(-BillTable.date),
       }
       template = setting.JINJA_ENVIRONMENT.get_template('template/store_bill_table.html')
       self.response.write(template.render(template_values))
