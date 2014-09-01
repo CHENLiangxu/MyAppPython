@@ -1,6 +1,15 @@
 {% extends "template/base.html" %}
 {% block title %}Add item{% endblock %}
 {% block content %}
+
+{% for key, value in result.iteritems() %}
+	{% if value %}
+		<div class="error_add_item"> Success add  {{ key }} item  <div>
+	{% else %}
+		<div class="error_add_item"> Can not add  {{ key }} item  <div>
+	{% endif %}
+{% endfor %}
+
 <div class="title_item_page">Add item</div>
 <div class="add_item_form">
 <form action="/store_item" method="post">
