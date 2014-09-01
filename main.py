@@ -7,7 +7,10 @@ import setting
 from google.appengine.ext import ndb
 from google.appengine.api import users
 
-from model import Account
+
+class Account(ndb.Model):
+  username = ndb.StringProperty()
+  power = ndb.StringProperty()
 
 class IndexPage(webapp2.RequestHandler):
     def get(self):

@@ -10,13 +10,18 @@ import setting
 
 from google.appengine.ext import ndb
 from google.appengine.api import users
-from model import Account, Greeting
+from main import Account
 
 guestbook_key = ndb.Key('Guestbook', 'default_guestbook')
 
 def guestbook_key(guestbook_name=setting.DEFAULT_GUESTBOOK_NAME):
     """Constructs a Datastore key for a Guestbook entity with guestbook_name."""
     return ndb.Key('Guestbook', guestbook_name)
+
+class Greeting(ndb.Model):
+  author = ndb.UserProperty()
+  content = ndb.StringProperty(indexed=False)
+  date = ndb.DateTimeProperty(auto_now_add=True)
 
 class GuestbookPage(webapp2.RequestHandler):
 
