@@ -1,0 +1,30 @@
+{% extends "template/base.html" %}
+{% block title %}Add person{% endblock %}
+{% block content %}
+{% if result %}
+<div class="error_add_item"> Success add person<div>
+{% endif %}
+<div class="person_div">
+	<table class="add_person_table">
+		<thead>
+			<tr><td>name</td><td>téléphone</td></tr>
+		</thead>
+		<tbody>
+		{% for person in persons %}
+			<tr><td>{{person.nom}}</td><td>{{person.telephone}}</td></tr> 
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
+<hr>
+<div class="add_person_form">
+<form action="/test" method="post">
+	<table class="add_person_table">
+		<tr><td>Nom:</td><td>{{input('nom', required=True)}}</td></tr>
+      	<tr><td>téléphone: </td><td>{{input('telephone')}}</td></tr>
+	</table>
+    <input type="submit" value="Add" name="type">
+</form>
+<hr>
+
+{% endblock %}

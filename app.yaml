@@ -13,6 +13,8 @@ handlers:
   script: guestbook.application
 - url: /store.*
   script: store.application
+- url: /test.*
+  script: test.application
 
 libraries:
 - name: webapp2
