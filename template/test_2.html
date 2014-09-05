@@ -1,0 +1,28 @@
+{% extends "template/base.html" %}
+{% block title %}Find membre{% endblock %}
+{% block content %}
+{% if result %}
+<div class="error_add_item"> Success find out the member<div>
+<div>
+	<table>
+		<thead>
+			<tr><td>nom</td><td>pérnom</td><td>post</td></tr>
+		</thead>
+		<tbody>
+		{% for membre in membres %}
+			<tr><td>{{membre.nom}}</td><td>{{membre.pernom}}</td><td>{{membre.post}}</td></tr> 
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
+<hr>
+{% endif %}
+<div class="add_person_form">
+<form action="/test_2" method="post">
+	<table class="add_person_table">
+		<tr><td>Nom:</td><td>{{input('nom', required=True)}}</td></tr>
+	</table>
+    <input type="submit" value="Find">
+</form>
+<hr>
+{% endblock %}

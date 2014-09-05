@@ -41,25 +41,48 @@ class PersonPage(webapp2.RequestHandler):
     template_values = {
       'persons': persons,
     }
-    template = setting.JINJA_ENVIRONMENT.get_template('template/test.html')
+    template = setting.JINJA_ENVIRONMENT.get_template('template/test_1.html')
     self.response.write(template.render(template_values))
 
   def post(self):
     #to do: check the values
-    if self.request.get('type') == "Add":
-      new_person = Person()
-      res = new_person.set(
-        nom=self.request.get('nom'),
-        telephone=self.request.get('telephone'),
-      )
+    new_person = Person()
+    res = new_person.set(
+      nom=self.request.get('nom'),
+      telephone=self.request.get('telephone'),
+    )
     persons = Person.query().order(Person.nom)
     template_values = {
-          'persons': persons,
-          'result': res,
-      }
-    template = setting.JINJA_ENVIRONMENT.get_template('template/test.html')
+      'persons': persons,
+      'result': res,
+    }
+    template = setting.JINJA_ENVIRONMENT.get_template('template/test_1.html')
+    self.response.write(template.render(template_values))
+
+class MembrePage(webapp2.RequestHandler):
+  def get(self):
+    membres = Membre.query().order(Membre.nom)
+    template_values = {
+      'membres': membres,
+      'result': True,
+    }
+    template = setting.JINJA_ENVIRONMENT.get_template('template/test_2.html')
+    self.response.write(template.render(template_values))
+
+  def post(self):
+    membres = Membre.query(Membre.nom == self.request.get('nom')).order(Membre.nom)
+    if membres.count() == 0:
+      result = False
+    else:
+      result = True
+    template_values = {
+      'membres': membres,
+      'result': result,
+    }
+    template = setting.JINJA_ENVIRONMENT.get_template('template/test_2.html')
     self.response.write(template.render(template_values))
 
 application = webapp2.WSGIApplication([
-    ('/test', PersonPage),
+    ('/test_1', PersonPage),
+    ('/test_2', MembrePage),
 ], debug=True)
